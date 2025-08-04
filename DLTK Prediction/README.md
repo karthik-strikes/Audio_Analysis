@@ -1,6 +1,6 @@
 # DLTK Prediction Experiments
 
-This repository contains a Jupyter notebook (`Klaatch_predictions.ipynb`) that runs several experiments using the DLTK (Digital Language Toolkit) to predict the `CEL_Total` outcome from various audio and text features. The notebook also includes a section for combining the predictions from multiple models using an ensemble method.
+This repository contains a Jupyter notebook (`Klaatch_predictions.ipynb`) that runs several experiments using the DLTK (Differential Language Analysis ToolKit) to predict the `CEL_Total` outcome from various audio and text features. The notebook also includes a section for combining the predictions from multiple models using an ensemble method.
 
 ## Code Description
 
