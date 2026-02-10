@@ -6,7 +6,7 @@ A complete end-to-end pipeline for predicting emotional loneliness from conversa
 
 ---
 
-## 🎯 Overview
+## Overview
 
 Loneliness is a significant public health concern, particularly among older adults. This pipeline addresses the challenge of predicting emotional loneliness using multimodal features extracted from conversational audio recordings.
 
@@ -36,32 +36,26 @@ Loneliness is a significant public health concern, particularly among older adul
 
 ---
 
-## ✨ Key Capabilities
+## Key Capabilities
 
-### 🎵 Comprehensive Feature Extraction
+### Comprehensive Feature Extraction
 - **4 audio feature types**: Whisper (speech embeddings), OpenSmile (88 acoustic features), Librosa (38 audio features), Trill (embeddings)
 - **3 text feature types**: LIWC2022 (psychological categories), LDA topics, n-grams with PMI filtering
 - Automated extraction with GPU acceleration support
 
-### ⚖️ Fair Demographic Analysis
+### Fair Demographic Analysis
 - **Propensity score matching**: Creates balanced demographic subgroups using logistic regression
 - **Fairness evaluation**: Tests model performance across gender and racial groups
 - Ensures equitable predictions across populations
 
-### 🔬 Rigorous Methodology
+### Rigorous Methodology
 - **Participant-level cross-validation**: Splits by person, not message (prevents data leakage)
 - **Statistical rigor**: Bonferroni correction for multiple comparisons
 - **Complete documentation**: Every analysis step documented in Jupyter notebooks
 
-### 📊 Publication-Ready Outputs
-- Correlation tables (Tables 2, 3, S1-S9 from paper)
-- Prediction results by subgroup (Table 4)
-- Feature importance rankings
-- Performance metrics with confidence intervals
-
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -113,11 +107,20 @@ Each notebook is self-contained with detailed explanations. See [Analysis Workfl
 
 ---
 
-## 📋 Analysis Workflow
+## Analysis Workflow
 
-The complete research pipeline consists of 5 sequential stages:
+The complete research pipeline consists of 5 sequential stages, implemented as Jupyter notebooks.
 
-### 1️⃣ Audio Feature Extraction
+**Why Notebooks?**
+- **Reproducibility**: Each notebook is self-contained with detailed explanations, making it easy to reproduce results
+- **Transparency**: All analysis steps are visible and documented inline with code
+- **Exploratory Analysis**: Notebooks allow for iterative data exploration and visualization
+- **Research Standard**: Common format for sharing computational research methods
+- **DLATK Integration**: DLATK commands are best run interactively in notebook cells
+
+The notebooks can be run independently or in sequence:
+
+### 1. Audio Feature Extraction
 **Notebook:** `Audio Feature Extraction Pipeline.ipynb`
 
 - Loads and merges data from multiple sources (demographics, transcripts, audio files)
@@ -132,7 +135,7 @@ The complete research pipeline consists of 5 sequential stages:
 
 ---
 
-### 2️⃣ Propensity Score Matching
+### 2. Propensity Score Matching
 **Notebook:** `Propensity Score Matching Analysis.ipynb`
 
 - Calculates propensity scores using logistic regression
@@ -151,7 +154,7 @@ The complete research pipeline consists of 5 sequential stages:
 
 ---
 
-### 3️⃣ Data Stratification & Cross-Validation
+### 3. Data Stratification & Cross-Validation
 **Notebook:** `Data Stratification for Cross-Validation.ipynb`
 
 - Creates participant-level train/test splits (NOT message-level)
@@ -165,7 +168,7 @@ The complete research pipeline consists of 5 sequential stages:
 
 ---
 
-### 4️⃣ Linguistic Features & Statistical Analysis
+### 4. Linguistic Features & Statistical Analysis
 **Notebook:** `Features Analysis.ipynb`
 
 - Extracts linguistic features using [DLATK](https://dlatk.github.io/dlatk/):
@@ -189,7 +192,7 @@ See [DLATK documentation](https://dlatk.github.io/dlatk/) for command syntax.
 
 ---
 
-### 5️⃣ Prediction Models
+### 5. Prediction Models
 **Notebook:** `Predicting Loneliness from Multimodal Features.ipynb`
 
 - Combines all features (audio + text + demographics)
@@ -206,7 +209,7 @@ See [DLATK documentation](https://dlatk.github.io/dlatk/) for command syntax.
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 ### Configuration
 
@@ -283,7 +286,7 @@ python run_pipeline.py --all
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 Audio_Analysis/
@@ -332,7 +335,7 @@ Audio_Analysis/
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Module Not Found Errors
 
@@ -398,7 +401,7 @@ ls $AUDIO_ROOT/*.mp3
 
 ---
 
-## 🚀 Advanced Usage
+## Advanced Usage
 
 ### Custom Feature Extractors
 
@@ -468,7 +471,7 @@ CREATE TABLE merged_data (
 
 ---
 
-## 📖 Citation
+## Citation
 
 If you use this pipeline in your research, please cite:
 
@@ -483,13 +486,13 @@ If you use this pipeline in your research, please cite:
 
 ---
 
-## 📄 License
+## License
 
 [Add license information]
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 This pipeline was developed as part of a research study. For questions, issues, or contributions:
 
@@ -499,7 +502,7 @@ This pipeline was developed as part of a research study. For questions, issues, 
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 This pipeline uses the following open-source projects:
 
@@ -514,7 +517,7 @@ This pipeline uses the following open-source projects:
 
 ---
 
-## 📊 Version History
+## Version History
 
 ### Version 1.0.0 (2024-01-29)
 
