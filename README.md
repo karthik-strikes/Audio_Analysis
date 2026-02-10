@@ -1,14 +1,15 @@
-# Audio Feature Extraction Pipeline
+# Multimodal Loneliness Prediction Pipeline
 
-**Version 1.0.0** | Production-Ready Audio Analysis Tool
+**Version 1.0.0** | Complete Analysis Pipeline from Audio/Text Features to Prediction
 
-A comprehensive pipeline for extracting acoustic and linguistic features from audio data using state-of-the-art models including Whisper, OpenSmile, Librosa, and Trill.
+A comprehensive end-to-end pipeline for predicting loneliness from multimodal features (audio + text). This repository contains the complete workflow from feature extraction through statistical analysis to machine learning prediction models.
 
 ---
 
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Analysis Workflow](#analysis-workflow)
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
@@ -16,6 +17,7 @@ A comprehensive pipeline for extracting acoustic and linguistic features from au
 - [Usage](#usage)
 - [Features](#features)
 - [Pipeline Stages](#pipeline-stages)
+- [Notebooks](#notebooks)
 - [Troubleshooting](#troubleshooting)
 - [Advanced Usage](#advanced-usage)
 - [Version History](#version-history)
@@ -24,22 +26,84 @@ A comprehensive pipeline for extracting acoustic and linguistic features from au
 
 ## Overview
 
-This pipeline processes audio files from the Klaatch dataset (2021-2023) and extracts multiple types of features:
+This pipeline processes audio and text data from the Klaatch dataset (2021-2023) to predict emotional loneliness scores. It combines acoustic features, linguistic features, and demographic data through a multi-stage analysis workflow.
 
+### Feature Types
+
+**Audio Features:**
 - **Whisper Features**: Speech embeddings using OpenAI's Whisper model
 - **OpenSmile Features**: 88 acoustic features (eGeMAPSv02 feature set)
 - **Librosa Features**: 38 audio features (MFCCs, Chroma, Spectral Contrast, Tonnetz)
 - **Trill Features**: Audio embeddings from Google's Trill model
 
+**Text/Linguistic Features** (via [DLATK](https://dlatk.github.io/dlatk/)):
+- **LIWC2022**: Linguistic Inquiry and Word Count categories
+- **LDA Topics**: Latent Dirichlet Allocation topic modeling
+- **N-grams**: 1-3 gram language features with PMI filtering
+
+**Demographic Features:**
+- Age, Gender, Race
+- CEL (UCLA Loneliness Scale) scores
+
 ### Key Capabilities
 
-✅ **Modular Architecture** - Clean separation of concerns  
-✅ **Command-Line Interface** - Easy execution with various options  
-✅ **Multiple Feature Extractors** - 4 different extraction methods  
-✅ **Database Integration** - MySQL storage and retrieval  
-✅ **Error Handling** - Graceful failures with informative messages  
-✅ **GPU Support** - Automatic CUDA detection for faster processing  
-✅ **Skip Processed Files** - Avoids reprocessing existing features  
+✅ **Complete Analysis Pipeline** - From raw audio to prediction models
+✅ **Multimodal Features** - Audio + Text + Demographics
+✅ **DLATK Integration** - Linguistic feature extraction via DLATK commands
+✅ **Propensity Score Matching** - Fair demographic subgroup analysis
+✅ **Participant-Level CV** - Prevents data leakage in cross-validation
+✅ **Statistical Analysis** - Correlation tables with Bonferroni correction
+✅ **Multiple ML Models** - ExtraTrees regression for prediction
+✅ **Database Integration** - MySQL storage and retrieval
+✅ **GPU Support** - Automatic CUDA detection for faster processing
+
+---
+
+## Analysis Workflow
+
+The complete analysis follows this sequence:
+
+### 1️⃣ **Feature Extraction** → `Audio Feature Extraction Pipeline.ipynb`
+Extract acoustic features from audio files:
+- Whisper embeddings
+- OpenSmile acoustic features
+- Librosa audio features
+- Trill embeddings
+- Store in MySQL database
+
+### 2️⃣ **Propensity Score Matching** → `Propensity Score Matching Analysis.ipynb`
+Create balanced demographic subgroups:
+- Calculate propensity scores using logistic regression
+- 1:1 nearest neighbor matching
+- Generate balanced datasets: `stratified_male`, `stratified_female`, `stratified_black`, `stratified_white`
+- Ensure fair model evaluation across demographics
+
+### 3️⃣ **Data Stratification & Cross-Validation** → `Data Stratification for Cross-Validation.ipynb`
+Prepare data for participant-level cross-validation:
+- Split by participant ID (not message ID) to prevent data leakage
+- Create stratified folds for training/testing
+- Balance demographic groups across folds
+
+### 4️⃣ **Feature Analysis (DLATK)** → `Features Analysis.ipynb`
+Extract and analyze linguistic features using [DLATK](https://dlatk.github.io/dlatk/):
+- **LIWC2022**: Psychological language categories
+- **LDA Topics**: Topic modeling on text data
+- **N-grams**: 1-3 gram features with PMI filtering
+- Run analysis on **total dataset** and **stratified subgroups** (male, female, black, white)
+- Generate correlation tables (Tables 2, 3, S1-S9)
+- Statistical analysis with Bonferroni correction
+
+**Note:** This notebook contains DLATK command-line calls in cells. See [DLATK documentation](https://dlatk.github.io/dlatk/) for command syntax.
+
+### 5️⃣ **Prediction Models** → `Predicting Loneliness from Multimodal Features.ipynb`
+Train and evaluate machine learning models:
+- ExtraTrees regression with hyperparameter tuning
+- Feature combination strategies (Combined Text, Combined Audio, Multimodal)
+- Participant-level cross-validation
+- Feature importance analysis
+- Performance evaluation by demographic subgroups
+- Generate results tables (Table 4, prediction metrics)
+- Pearson correlations with confidence intervals  
 
 ---
 
@@ -160,11 +224,14 @@ Audio_Analysis/
 │   ├── audio_sentence_splitter.py
 │   └── whisper_feature_extractor.py
 │
-├── 📓 Jupyter Notebooks (notebooks/)
+├── 📓 Jupyter Notebooks (notebooks/) - Complete Analysis Pipeline
 │   ├── README.md
-│   ├── Audio Feature Extraction Pipeline.ipynb
-│   ├── Features Analysis.ipynb
-│   └── ... (more notebooks)
+│   ├── 1. Audio Feature Extraction Pipeline.ipynb
+│   ├── 2. Propensity Score Matching Analysis.ipynb
+│   ├── 3. Data Stratification for Cross-Validation.ipynb
+│   ├── 4. Features Analysis.ipynb (DLATK commands)
+│   ├── 5. Predicting Loneliness from Multimodal Features.ipynb
+│   └── 6. Topic Messages Analysis.ipynb
 │
 └── 📚 README.md                 # This file
 ```
@@ -227,9 +294,12 @@ python -c "from src.database import test_connection; test_connection()"
 Core packages (see `requirements.txt` for complete list):
 - **Core**: numpy, pandas, torch, transformers
 - **Audio**: librosa, soundfile, pydub, opensmile
+- **Text/Linguistic**: DLATK (Differential Language Analysis ToolKit) - see [installation guide](https://dlatk.github.io/dlatk/install.html)
 - **ML**: scikit-learn
 - **Database**: mysql-connector-python
 - **Config**: python-dotenv
+
+**Note on DLATK:** DLATK is required for linguistic feature extraction (LIWC, LDA, N-grams) in the `Features Analysis.ipynb` notebook. Install separately following the [DLATK installation guide](https://dlatk.github.io/dlatk/install.html).
 
 ---
 
@@ -332,7 +402,13 @@ Extracts Whisper features from MP3 files:
 python scripts/whisper_feature_extractor.py
 ```
 
-### Using Jupyter Notebooks
+---
+
+## Notebooks
+
+The `notebooks/` folder contains the complete analysis pipeline as Jupyter notebooks. Each notebook represents a stage in the workflow and can be run independently or in sequence.
+
+### Running Notebooks
 
 ```bash
 # Start Jupyter
@@ -342,9 +418,194 @@ jupyter notebook notebooks/
 jupyter lab
 ```
 
-See `notebooks/README.md` for details on each notebook.
+### Notebook Workflow (in order)
+
+#### 1. Audio Feature Extraction Pipeline.ipynb
+**Stage**: Feature Extraction (Audio)
+
+**What it does:**
+- Loads and merges data from multiple sources (demographics, transcripts, audio files)
+- Extracts Whisper embeddings from audio
+- Extracts OpenSmile acoustic features (88 features)
+- Extracts Librosa audio features (38 features)
+- Loads Trill pre-computed embeddings
+- Stores all features in MySQL database
+
+**Output:**
+- Database tables with audio features
+- Processed data ready for analysis
+
+---
+
+#### 2. Propensity Score Matching Analysis.ipynb
+**Stage**: Demographic Balancing
+
+**What it does:**
+- Calculates propensity scores using logistic regression
+- Performs 1:1 nearest neighbor matching
+- Creates balanced demographic subgroups:
+  - `stratified_male` / `stratified_female`
+  - `stratified_black` / `stratified_white`
+- Evaluates model fairness across subgroups
+- Exports matched datasets to database
+
+**Output:**
+- 4 balanced demographic datasets
+- Subgroup performance metrics (MAE, R²)
+
+**Key Functions:**
+- `calculate_propensity_scores()` - Propensity score calculation
+- `perform_propensity_matching()` - 1:1 matching algorithm
+- `evaluate_subgroup_performance()` - Model evaluation by group
+
+---
+
+#### 3. Data Stratification for Cross-Validation.ipynb
+**Stage**: Cross-Validation Setup
+
+**What it does:**
+- Creates participant-level train/test splits (NOT message-level)
+- Prevents data leakage by keeping all messages from one participant in the same fold
+- Generates stratified folds for cross-validation
+- Verifies balance across demographic groups
+
+**Output:**
+- Cross-validation fold assignments
+- Balanced training/testing splits
+
+**Important:** Splits by `klaatch_id` (participant ID), ensuring messages from the same person don't appear in both train and test sets.
+
+---
+
+#### 4. Features Analysis.ipynb
+**Stage**: Linguistic Feature Extraction & Statistical Analysis
+
+**What it does:**
+- Extracts linguistic features using **DLATK** ([Differential Language Analysis ToolKit](https://dlatk.github.io/dlatk/))
+- Runs DLATK commands for:
+  - **LIWC2022**: Linguistic Inquiry and Word Count categories
+  - **LDA Topics**: Latent Dirichlet Allocation topic modeling
+  - **N-grams**: 1-3 gram language features with PMI filtering
+- Analyzes features for:
+  - **Total dataset** (all participants)
+  - **Stratified subgroups** (male, female, black, white)
+- Computes correlations with Bonferroni correction
+- Generates correlation tables (Tables 2, 3, S1-S9)
+
+**Output:**
+- LIWC feature tables in database
+- LDA topic distributions
+- N-gram features (1-3 grams with PMI ≥ 6.0)
+- Statistical correlation tables
+
+**Note on DLATK:**
+This notebook contains DLATK command-line calls within cells. DLATK is a command-line tool, so the notebook preserves the exact commands used. Example:
+```bash
+dlatkInterface.py -d audio_analysis -t merged_data -c message_id \
+    --add_liwc --liwc_table feat$cat_LIWC2022_lw$merged_data$message_id$1gra \
+    --outcome_table stratified_female --outcomes CEL_Total
+```
+
+See [DLATK documentation](https://dlatk.github.io/dlatk/) for command syntax and options.
+
+**Some duplicate code may exist across notebooks** - this is intentional for reproducibility and to keep each notebook self-contained.
+
+---
+
+#### 5. Predicting Loneliness from Multimodal Features.ipynb
+**Stage**: Machine Learning Prediction
+
+**What it does:**
+- Combines all features (audio + text + demographics)
+- Creates feature combinations:
+  - **Combined (Text)**: LIWC + LDA + N-grams
+  - **Combined (Audio)**: Whisper + OpenSmile + Librosa + Trill
+  - **Multimodal**: Text + Audio combined
+- Trains ExtraTrees regression models with hyperparameter tuning
+- Performs participant-level cross-validation
+- Calculates feature importance
+- Evaluates performance across demographic subgroups
+- Computes Pearson correlations with confidence intervals
+- Generates prediction results tables (Table 4)
+
+**Output:**
+- Trained prediction models
+- Feature importance rankings
+- Performance metrics (R², MAE, Pearson r)
+- Results tables for publication
+
+**Key Analyses:**
+- Baseline model comparisons
+- Feature ablation studies
+- Subgroup performance evaluation
+- Statistical significance testing
+
+---
+
+#### 6. Topic Messages Analysis.ipynb
+**Stage**: Exploratory Analysis (Optional)
+
+**What it does:**
+- Topic modeling and message clustering
+- Thematic analysis of conversation content
+- Topic distribution visualization
+
+---
+
+### Working with DLATK Commands
+
+Many notebooks use [DLATK](https://dlatk.github.io/dlatk/) for linguistic feature extraction. DLATK is a command-line tool that we call from notebook cells using shell commands (prefix with `!`).
+
+**Example DLATK command:**
+```python
+!dlatkInterface.py -d audio_analysis -t merged_data -c message_id \
+    --add_ngrams -n 1 2 3 --combine_feat_tables 1to3gram \
+    --feat_occ_filter --set_p_occ 0.05 --feat_colloc_filter \
+    --set_pmi_threshold 6.0
+```
+
+**Common DLATK operations in our pipeline:**
+- `--add_liwc`: Extract LIWC2022 features
+- `--add_ngrams`: Extract n-gram features
+- `--topic_model`: Train LDA topic models
+- `--correlate`: Compute feature-outcome correlations
+- `--nfold_test_regression`: Participant-level cross-validation with ML models
+
+For full DLATK documentation and all available commands, see: https://dlatk.github.io/dlatk/
+
+---
 
 ### Common Workflows
+
+**Complete Analysis Workflow (Recommended - Using Notebooks):**
+
+This is the full research pipeline from raw data to prediction results:
+
+1. **Extract Audio Features**
+   - Open: `Audio Feature Extraction Pipeline.ipynb`
+   - Or use: `python run_pipeline.py --all`
+
+2. **Create Balanced Demographic Groups**
+   - Open: `Propensity Score Matching Analysis.ipynb`
+   - Generates: `stratified_male`, `stratified_female`, `stratified_black`, `stratified_white`
+
+3. **Setup Cross-Validation**
+   - Open: `Data Stratification for Cross-Validation.ipynb`
+   - Creates participant-level folds
+
+4. **Extract Text Features & Statistical Analysis**
+   - Open: `Features Analysis.ipynb`
+   - Run DLATK commands for LIWC, LDA, N-grams
+   - Generates correlation tables (Tables 2, 3, S1-S9)
+
+5. **Train Prediction Models**
+   - Open: `Predicting Loneliness from Multimodal Features.ipynb`
+   - Trains models, evaluates performance
+   - Generates prediction results (Table 4)
+
+---
+
+**Quick Start Workflows (Using Python Scripts):**
 
 **Workflow 1: Data Preparation Only**
 ```bash
@@ -352,7 +613,7 @@ python setup.py
 python run_pipeline.py --load-only
 ```
 
-**Workflow 2: Feature Extraction**
+**Workflow 2: Audio Feature Extraction Only**
 ```bash
 # Extract one feature type at a time for large datasets
 python run_pipeline.py --extract-whisper
@@ -361,10 +622,12 @@ python run_pipeline.py --load-trill
 python run_pipeline.py --insert-db
 ```
 
-**Workflow 3: Complete Pipeline**
+**Workflow 3: Complete Audio Feature Extraction**
 ```bash
 python run_pipeline.py --all
 ```
+
+**Note:** The Python scripts handle audio feature extraction only. For text features (LIWC, LDA, N-grams) and statistical analysis, use the notebooks with DLATK commands.
 
 ---
 
