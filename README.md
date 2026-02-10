@@ -23,7 +23,7 @@ Loneliness is a significant public health concern, particularly among older adul
    - Subgroup performance evaluation
 
 3. **Generates publication-ready results**:
-   - Feature correlation tables with Bonferroni correction
+   - Feature correlation tables
    - ExtraTrees regression predictions
    - Performance metrics by demographic subgroups
 
@@ -50,7 +50,7 @@ Loneliness is a significant public health concern, particularly among older adul
 
 ### Rigorous Methodology
 - **Participant-level cross-validation**: Splits by person, not message (prevents data leakage)
-- **Statistical rigor**: Bonferroni correction for multiple comparisons
+- **Statistical rigor**: Multiple testing correction for comparisons
 - **Complete documentation**: Every analysis step documented in Jupyter notebooks
 
 ---
@@ -178,7 +178,7 @@ The notebooks can be run independently or in sequence:
 - Runs analysis on:
   - Total dataset (all participants)
   - Stratified subgroups (male, female, black, white)
-- Computes correlations with Bonferroni correction
+- Computes correlations with multiple testing correction
 - Generates correlation tables (Tables 2, 3, S1-S9)
 
 **Output:** Linguistic feature tables and statistical correlation results
@@ -536,7 +536,7 @@ This pipeline uses the following open-source projects:
 **Methodology:**
 - Ensures fair ML through demographic balancing
 - Prevents data leakage via participant-level CV
-- Statistical rigor with Bonferroni correction
+- Statistical rigor with multiple testing correction
 - Generates publication-ready results tables
 
 ---
